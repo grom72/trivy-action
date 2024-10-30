@@ -135,6 +135,7 @@ runs:
 
     - name: Restore DB from cache
       if: ${{ inputs.cache == 'true' }}
+      id: restore-db
       uses: actions/cache@v4
       with:
         path: ${{ inputs.cache-dir }}
@@ -202,3 +203,5 @@ runs:
 
         # For Trivy
         TRIVY_CACHE_DIR: ${{ inputs.cache-dir }} # Always set
+        TRIVY_SKIP_DB_UPDATE: ${{ inputs.cache && steps.restore-db.outputs.cache-hit }}
+        TRIVY_SKIP_JAVA_DB_UPDATE: ${{ inputs.cache && steps.restore-db.outputs.cache-hit }}
